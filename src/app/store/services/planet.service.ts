@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Planet } from '../models/planets.model';
+import { Planet, PlanetApiResponse } from '../models/planets.model';
+import { map, delay } from 'rxjs/operators';
 
 
 @Injectable({
@@ -15,7 +16,11 @@ export class PlanetService {
 
 
   getPlanets(): Observable<Planet[]> {
-    return this.http.get<Planet[]>(this.apiUrl);
+    return this.http.get<PlanetApiResponse>(this.apiUrl)
+      .pipe(
+        delay(2000),
+        map(response => response.results)
+      );
   }
 
 }

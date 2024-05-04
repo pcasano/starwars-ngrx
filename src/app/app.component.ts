@@ -12,27 +12,13 @@ import { Planet } from './store/models/planets.model';
 })
 export class AppComponent implements OnInit {
 
-  planets$ = this.planetStore.planets$;
-  planetsInProgress$ = this.planetStore.planetInProgress$;
-  planetError$ = this.planetStore.planetError$;
-
+  planets: Planet[] | undefined | null = [];
+  planetsInProgress = true;
 
   constructor(private readonly planetStore: PlanetStore) {}
 
-
-    title = 'starwars-ngrx';
-
-
   ngOnInit(): void {
-
-
-    this.planetStore.planets$.subscribe(planet => console.log(planet));
-
-
+    this.planetStore.planets$.subscribe(planets => this.planets = planets);
+    this.planetStore.planetInProgress$.subscribe(planetsInProgress => this.planetsInProgress = planetsInProgress);
   }
-
-
-
-
-
 }
