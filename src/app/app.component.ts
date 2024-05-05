@@ -15,16 +15,14 @@ export class AppComponent implements OnInit {
 
   planets: Planet[] | undefined | null = [];
   planetsInProgress = true;
-  planetError: HttpErrorResponse | undefined | null
+  planetError: HttpErrorResponse | undefined | null;
 
   constructor(private readonly planetStore: PlanetStore) {}
 
   ngOnInit(): void {
     this.planetStore.planets$.subscribe(planets => this.planets = planets);
     this.planetStore.planetInProgress$.subscribe(planetsInProgress => this.planetsInProgress = planetsInProgress);
-  }
-
-  loadError() {
     this.planetStore.planetError$.subscribe(error => this.planetError = error);
+    console.log(this.planetError);
   }
 }

@@ -45,7 +45,10 @@ export interface PlanetState {
         return this.planetService.getPlanets().pipe(
           tapResponse<Planet[], HttpErrorResponse>(
           (planets: Planet[]) => this.updatePlanets(planets),
-          (error: HttpErrorResponse) => this.updatePlanetsError(error)
+          (error: HttpErrorResponse) => {
+            console.log(error.name)
+            this.updatePlanetsError(error)
+          }
         ))
       });
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { Planet, PlanetApiResponse } from '../models/planets.model';
 import { map, delay } from 'rxjs/operators';
 
