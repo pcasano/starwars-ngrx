@@ -1,11 +1,14 @@
-
-  <ng-container *ngIf="!planetsInProgress ; else loading">
-<table>
+<div class="container">
+<div *ngIf="!planetsInProgress; else NoData">
+<table class="table">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Diameter</th>
-      <th>Population</th>
+      <th class="col">Name</th>
+      <th class="col">Diameter</th>
+      <th class="col">Population</th>
+      <th class="col">Climate</th>
+      <th class="col">Gracity</th>
+      <th class="col">Orbital period</th>
     </tr>
   </thead>
   <tbody>
@@ -13,12 +16,16 @@
       <td>{{ planet.name }}</td>
       <td>{{ planet.diameter }}</td>
       <td>{{ planet.population }}</td>
+      <td>{{ planet.climate }}</td>
+      <td>{{ planet.gravity }}</td>
+      <td>{{ planet.orbital_period }}</td>
     </tr>
   </tbody>
 </table>
-</ng-container>
+</div>
 
-<ng-template #loading>
-  <div>loading...</div>
+<ng-template #NoData>
+  <div *ngIf="planetsInProgress">loading...</div>
+  <div *ngIf="planetError !== null && planetError !== undefined">error...</div>
 </ng-template>
-
+</div>
