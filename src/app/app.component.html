@@ -1,5 +1,5 @@
 <div class="container">
-<div *ngIf="!planetsInProgress && planetError === null; else NoData">
+<div *ngIf="planets$ | async as planets">
 <table class="table">
   <thead>
     <tr>
@@ -24,8 +24,6 @@
 </table>
 </div>
 
-<ng-template #NoData>
-  <div *ngIf="planetsInProgress">loading...</div>
-  <div *ngIf="planetError?.status === 404">error</div>
-</ng-template>
+  <div *ngIf="planetsInProgress$ | async">loading...</div>
+  <div *ngIf="(planetError$ | async)?.status===404">error</div>
 </div>

@@ -14,12 +14,8 @@ export class PlanetService {
   constructor(private http: HttpClient) {}
 
 
-  getPlanets(): Observable<Planet[]> {
-    return this.http.get<PlanetApiResponse>(this.apiUrl)
-      .pipe(
-        delay(2000),
-        map(response => response.results)
-      );
+  getPlanets(): Observable<PlanetApiResponse> {
+    return this.http.get<PlanetApiResponse>(this.apiUrl).pipe(delay(2000));
   }
 
 }

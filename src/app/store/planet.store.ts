@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Planet } from "./models/planets.model";
+import { Planet, PlanetApiResponse } from "./models/planets.model";
 import { Injectable } from "@angular/core";
 import { ComponentStore, tapResponse } from "@ngrx/component-store";
 import { PlanetService } from "./services/planet.service";
+import { delay } from "rxjs";
 
 export interface PlanetState {
     planets: Planet[] | undefined | null;
@@ -43,8 +44,11 @@ export interface PlanetState {
 
       readonly getPlanets = this.effect(() => {
         return this.planetService.getPlanets().pipe(
-          tapResponse<Planet[], HttpErrorResponse>(
-          (planets: Planet[]) => this.updatePlanets(planets),
+          //delay(2000),
+          tapResponse<PlanetApiResponse, HttpErrorResponse>(
+          (planetApiResponse: PlanetApiResponse) => {
+            console.log("from store:", planetApiResponse.results)
+            this.updatePlanets(planetApiResponse.results)},
           (error: HttpErrorResponse) => {
             console.log(error.name)
             this.updatePlanetsError(error)
