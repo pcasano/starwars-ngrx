@@ -23,7 +23,10 @@
   </tbody>
 </table>
 </div>
-
-  <div *ngIf="planetsInProgress$ | async">loading...</div>
-  <div *ngIf="(planetError$ | async)?.status===404">error</div>
+@if(planetsInProgress$ | async) {
+  <div>loading...</div>
+}
+@if((planetError$ | async)?.status===404) {
+  <div>error</div>
+}
 </div>
