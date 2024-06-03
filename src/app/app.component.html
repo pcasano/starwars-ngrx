@@ -1,4 +1,8 @@
 <div class="container">
+  <form class="input-block" [formGroup]="userForm">
+    <label for="planet">Planet:</label>
+    <input class="text-input" id="planets" formControlName="planet" type="text">
+  </form>
 <div *ngIf="planets$ | async as planets">
 <table class="table">
   <thead>

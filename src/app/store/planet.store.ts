@@ -3,7 +3,7 @@ import { Planet, PlanetApiResponse } from "./models/planets.model";
 import { Injectable } from "@angular/core";
 import { ComponentStore, tapResponse } from "@ngrx/component-store";
 import { PlanetService } from "./services/planet.service";
-import { delay } from "rxjs";
+import { Observable, delay, switchMap } from "rxjs";
 
 export interface PlanetState {
     planets: Planet[] | undefined | null;
@@ -42,18 +42,21 @@ export interface PlanetState {
         planetError: error
       }));
 
-      readonly getPlanets = this.effect(() => {
-        return this.planetService.getPlanets().pipe(
-          //delay(2000),
-          tapResponse<PlanetApiResponse, HttpErrorResponse>(
-          (planetApiResponse: PlanetApiResponse) => {
-            console.log("from store:", planetApiResponse.results)
-            this.updatePlanets(planetApiResponse.results)},
-          (error: HttpErrorResponse) => {
-            console.log(error.name)
-            this.updatePlanetsError(error)
-          }
-        ))
+      readonly getPlanets = this.effect((planetId$: Observable<string>) => {
+
+        return planetId$.pipe(
+          switchMap((id) => this.planetService.getPlanetsGivenName(id).pipe(
+            tapResponse<PlanetApiResponse, HttpErrorResponse>(
+              (planetApiResponse: PlanetApiResponse) => {
+                console.log("from store:", planetApiResponse.results)
+                this.updatePlanets(planetApiResponse.results)},
+              (error: HttpErrorResponse) => {
+                console.log(error.name)
+                this.updatePlanetsError(error)
+              }
+            )
+          ))
+        )
       });
 
 }

@@ -4,6 +4,8 @@ import { PlanetStore } from './store/planet.store';
 import { Observable, tap } from 'rxjs';
 import { Planet } from './store/models/planets.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,23 +14,44 @@ import { HttpErrorResponse } from '@angular/common/http';
   providers: [PlanetStore],
 })
 export class AppComponent {
+  
 
-  // planets: Planet[] | undefined | null = [];
-  // planetsInProgress = true;
-  // planetError: HttpErrorResponse | undefined | null;
+  planetValue: string = '';
 
-  readonly planets$ = this.planetStore.planets$;
-  readonly planetsInProgress$ = this.planetStore.planetInProgress$;
-  readonly planetError$ = this.planetStore.planetError$;
+  userForm: FormGroup = new FormGroup({
+    planet: new FormControl('',),
+  });
 
-  constructor(private readonly planetStore: PlanetStore) {}
+  planets$: Observable<Planet[] | null | undefined>
+  planetsInProgress$: Observable<boolean>
+  planetError$: Observable<HttpErrorResponse | null | undefined>
 
-  // ngOnInit(): void {
-  //   this.planetStore.planets$.subscribe(planets => this.planets = planets);
-  //   this.planetStore.planetInProgress$.subscribe(planetsInProgress => this.planetsInProgress = planetsInProgress);
-  //   this.planetStore.planetError$.subscribe(error => this.planetError = error);
-  //   console.log(this.planetError);
-  // }
+  constructor(
+    private readonly planetStore: PlanetStore,
+  ) {}
+
+  ngOnInit(): void {
+    this.userForm.get('planet')?.valueChanges
+    .pipe(
+      debounceTime(1500),
+      distinctUntilChanged())
+    .subscribe(value => {
+      // this.planetValue = value;
+
+      // this.planetService.planet = this.planetValue;
+      // console.log("from init: " + this.planetService.planet);
+
+      this.planetStore.getPlanets(value);
+
+
+    });
+
+    this.planets$ = this.planetStore.planets$;
+    this.planetsInProgress$ = this.planetStore.planetInProgress$;
+    this.planetError$ = this.planetStore.planetError$;
+
+  }
+
 }
 
 
