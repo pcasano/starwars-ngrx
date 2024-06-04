@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PlanetService } from './store/services/planet.service';
 import { PlanetStore } from './store/planet.store';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { Planet } from './store/models/planets.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrl: './app.component.scss',
   providers: [PlanetStore],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy{
   
 
   planetValue: string = '';
@@ -26,12 +26,14 @@ export class AppComponent {
   planetsInProgress$: Observable<boolean>
   planetError$: Observable<HttpErrorResponse | null | undefined>
 
+  private dataSubscription: Subscription | undefined;
+
   constructor(
     private readonly planetStore: PlanetStore,
   ) {}
 
   ngOnInit(): void {
-    this.userForm.get('planet')?.valueChanges
+    this.dataSubscription = this.userForm.get('planet')?.valueChanges
     .pipe(
       debounceTime(1500),
       distinctUntilChanged())
@@ -51,6 +53,11 @@ export class AppComponent {
     this.planetError$ = this.planetStore.planetError$;
 
   }
+
+  ngOnDestroy(): void {
+    this.dataSubscription?.unsubscribe();
+  }
+
 
 }
 
